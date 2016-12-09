@@ -1,0 +1,15 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /static
+  static_dir: static
+  secure: always
+- url: /(new|submit)-post
+  script: main.app
+  login: admin
+  secure: always
+- url: /.*
+  script: main.app
+  secure: always

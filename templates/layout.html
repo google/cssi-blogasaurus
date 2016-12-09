@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}Blogasaurus{% endblock %}</title>
+  </head>
+  <body>
+    <h1><a href="{{ url_for('index') }}">Blogasaurus</a></h1>
+    {% block content %}{% endblock %}
+  </body>
+</html>
