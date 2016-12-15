@@ -2,10 +2,14 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}Blogasaurus{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
   </head>
   <body>
-    <h1><a href="{{ url_for('index') }}">Blogasaurus</a></h1>
-    {% block content %}{% endblock %}
+    <div id="content">
+      <h1><a href="{{ url_for('index') }}">Blogasaurus</a></h1>
+      {% block content %}{% endblock %}
+    </div>
+    {% block scripts %}{% endblock %}
   </body>
 </html>

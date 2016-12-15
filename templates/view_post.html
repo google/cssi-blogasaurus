@@ -5,4 +5,33 @@
 {% block content %}
   <h2>{{ post.title }}</h2>
   <p>{{ post.content }}</p>
+  <h3>Comments</h3>
+  {% if comments %}
+    <div id="comments">
+      {% for comment in comments %}
+        <div>
+          <h4><a href="mailto:{{ comment.author.email }}">{{ comment.author.nickname }}</a> wrote:</h4>
+          <p>{{ comment.content }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>There are no comments on this post yet.</p>
+  {% endif %}
+  <h3>Leave a Comment</h3>
+  {% if sign_in_url %}
+    <p>You must sign in to leave a comment.</p>
+    <p><a href="{{ sign_in_url }}">Sign In with a Google Account</a></p>
+  {% else %}
+    <form id="comment-form" action="{{ url_for('submit_comment') }}" method="post">
+      <input type="hidden" name="post_id" value="{{ post.key.urlsafe() }}">
+      <textarea id="comment-content" name="content"></textarea>
+      <input type="submit" value="Post Comment">
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="/static/comment.js"></script>
 {% endblock %}
