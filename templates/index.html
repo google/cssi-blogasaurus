@@ -1,17 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% if nickname %}
-    <p>
-      Hello, {{ nickname }}
-      {% if is_admin %}
-        • You are an admin
-      {% endif %}
-      • <a href="{{ auth_url }}">Sign Out</a>
-    </p>
-  {% else %}
-    <p><a href="{{ auth_url }}">Sign In with a Google Account</a></p>
-  {% endif %}
   {% for post in posts %}
     <h2><a href="{{ url_for('view_post', post_id=loop.index) }}">{{ post.title }}</a></h2>
     <p>{{ post.content }}</p>
