@@ -5,19 +5,15 @@
     <p>
       Hello, {{ nickname }}
       {% if is_admin %}
-        • <a href="{{ url_for('new_post') }}">New Post</a>
+        • You are an admin
       {% endif %}
       • <a href="{{ auth_url }}">Sign Out</a>
     </p>
   {% else %}
     <p><a href="{{ auth_url }}">Sign In with a Google Account</a></p>
   {% endif %}
-  {% if posts %}
-    {% for post in posts %}
-      <h2><a href="{{ url_for('view_post', post_id=post.key.urlsafe()) }}">{{ post.title }}</a></h2>
-      <p>{{ post.content }}</p>
-    {% endfor %}
-  {% else %}
-    <p>There are no posts yet.</p>
-  {% endif %}
+  {% for post in posts %}
+    <h2><a href="{{ url_for('view_post', post_id=loop.index) }}">{{ post.title }}</a></h2>
+    <p>{{ post.content }}</p>
+  {% endfor %}
 {% endblock %}
