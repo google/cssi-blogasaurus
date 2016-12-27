@@ -12,14 +12,16 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
-    is_signed_in = bool(users.get_current_user())
-    if is_signed_in:
+    user = users.get_current_user()
+    if user:
+        nickname = user.nickname()
         auth_url = users.create_logout_url(dest_url=flask.url_for('index'))
     else:
+        nickname = None
         auth_url = users.create_login_url(dest_url=flask.url_for('index'))
     return flask.render_template(
         'index.html',
-        is_signed_in=is_signed_in,
+        nickname=nickname,
         is_admin=users.is_current_user_admin(),
         auth_url=auth_url,
         posts=models.Post.query().order(-models.Post.posted_at).fetch())
@@ -65,7 +67,6 @@ def submit_post():
 
 @app.route('/submit-comment', methods=['POST'])
 def submit_comment():
-    print flask.request.form
     user = users.get_current_user()
     if not user:
         return flask.render_template('403.html'), 403

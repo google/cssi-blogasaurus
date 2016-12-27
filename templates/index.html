@@ -1,11 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% if is_signed_in %}
-    {% if is_admin %}
-      <p><a href="{{ url_for('new_post') }}">New Post</a></p>
-    {% endif %}
-    <p><a href="{{ auth_url }}">Sign Out</a></p>
+  {% if nickname %}
+    <p>
+      Hello, {{ nickname }}
+      {% if is_admin %}
+        • <a href="{{ url_for('new_post') }}">New Post</a>
+      {% endif %}
+      • <a href="{{ auth_url }}">Sign Out</a>
+    </p>
   {% else %}
     <p><a href="{{ auth_url }}">Sign In with a Google Account</a></p>
   {% endif %}
