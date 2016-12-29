@@ -3,14 +3,9 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /
-  static_files: index.html
-  upload: index.html
-  secure: always
-- url: /(.+\.html)$
-  static_files: posts/\1
-  upload: posts/.*
+- url: /static
+  static_dir: static
   secure: always
 - url: /.*
-  static_dir: static
+  script: main.app
   secure: always
