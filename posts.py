@@ -97,6 +97,24 @@ ERROR_400 = '''<!doctype html>
 '''
 
 
+ERROR_403 = '''<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Forbidden – Blogasaurus</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div id="content">
+      <h1><a href="/">Blogasaurus</a></h1>
+      <h2>Forbidden</h2>
+      <p>Sorry, but you don’t have permission to see this page.</p>
+    </div>
+  </body>
+</html>
+'''
+
+
 ERROR_404 = '''<!doctype html>
 <html lang="en-US">
   <head>

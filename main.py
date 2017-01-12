@@ -1,39 +1,57 @@
 import logging
+import os
+from os import path
 
-import flask
+import webapp2
 
 import posts
 
 
-app = flask.Flask(__name__)
+class IndexHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write(posts.INDEX)
 
 
-@app.route('/')
-def index():
-    return posts.INDEX
+class AllAboutMeHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write(posts.ALL_ABOUT_ME)
 
 
-@app.route('/all-about-me')
-def all_about_me():
-    return posts.ALL_ABOUT_ME
+class HowISpentMySummerVacationHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write(posts.HOW_I_SPENT_MY_SUMMER_VACATION)
 
 
-@app.route('/how-i-spent-my-summer-vacation')
-def how_i_spent_my_summer_vacation():
-    return posts.HOW_I_SPENT_MY_SUMMER_VACATION
+def handle_400(request, response, exception):
+    response.set_status(400)
+    response.write(posts.ERROR_400)
 
 
-@app.errorhandler(400)
-def handle_400(error):
-    return posts.ERROR_400, 400
+def handle_403(request, response, exception):
+    response.set_status(403)
+    response.write(posts.ERROR_403)
 
 
-@app.errorhandler(404)
-def handle_404(error):
-    return posts.ERROR_404, 404
+def handle_404(request, response, exception):
+    response.set_status(404)
+    response.write(posts.ERROR_404)
 
 
-@app.errorhandler(500)
-def handle_500(error):
-    logging.exception('An error occurred during a request.')
-    return posts.ERROR_500, 500
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.set_status(500)
+    response.write(posts.ERROR_500)
+
+
+app = webapp2.WSGIApplication(
+    routes=[
+        ('/', IndexHandler),
+        ('/all-about-me', AllAboutMeHandler),
+        ('/how-i-spent-my-summer-vacation', HowISpentMySummerVacationHandler),
+    ],
+    debug=(not
+           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+app.error_handlers[400] = handle_400
+app.error_handlers[403] = handle_403
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500
