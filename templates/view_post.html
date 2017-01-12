@@ -23,7 +23,7 @@
     <p>You must sign in to leave a comment.</p>
     <p><a href="{{ sign_in_url }}">Sign In with a Google Account</a></p>
   {% else %}
-    <form id="comment-form" action="{{ url_for('submit_comment') }}" method="post">
+    <form id="comment-form" action="/submit-comment" method="post">
       <input type="hidden" name="post_id" value="{{ post.key.urlsafe() }}">
       <textarea id="comment-content" name="content"></textarea>
       <input type="submit" value="Post Comment">

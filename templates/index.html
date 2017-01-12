@@ -5,7 +5,7 @@
     <p>
       Hello, {{ nickname }}
       {% if is_admin %}
-        • <a href="{{ url_for('new_post') }}">New Post</a>
+        • <a href="/new-post">New Post</a>
       {% endif %}
       • <a href="{{ auth_url }}">Sign Out</a>
     </p>
@@ -14,7 +14,7 @@
   {% endif %}
   {% if posts %}
     {% for post in posts %}
-      <h2><a href="{{ url_for('view_post', post_id=post.key.urlsafe()) }}">{{ post.title }}</a></h2>
+      <h2><a href="/view-post?id={{ post.key.urlsafe() }}">{{ post.title }}</a></h2>
       <p>{{ post.content }}</p>
     {% endfor %}
   {% else %}

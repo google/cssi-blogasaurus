@@ -2,6 +2,12 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
+libraries:
+- name: jinja2
+  version: 2.6
+- name: webapp2
+  version: 2.5.2
+
 handlers:
 - url: /static
   static_dir: static

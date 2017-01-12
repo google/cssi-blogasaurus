@@ -1,104 +1,137 @@
+import json
 import logging
+import os
+from os import path
 
-import flask
 from google.appengine.api import users
 from google.appengine.ext import ndb
+import jinja2
+import webapp2
 
 import models
 
 
-app = flask.Flask(__name__)
+template_dir = path.join(path.dirname(__file__), 'templates')
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 
-@app.route('/')
-def index():
-    user = users.get_current_user()
-    if user:
-        nickname = user.nickname()
-        auth_url = users.create_logout_url(dest_url=flask.url_for('index'))
-    else:
-        nickname = None
-        auth_url = users.create_login_url(dest_url=flask.url_for('index'))
-    return flask.render_template(
-        'index.html',
-        nickname=nickname,
-        is_admin=users.is_current_user_admin(),
-        auth_url=auth_url,
-        posts=models.Post.query().order(-models.Post.posted_at).fetch())
-
-
-@app.route('/post/<post_id>')
-def view_post(post_id):
-    post_key = ndb.Key(urlsafe=post_id)
-    post = post_key.get()
-    if post:
-        comments = (models.Comment.query(models.Comment.post == post_key)
-                    .order(models.Comment.posted_at).fetch())
-        if users.get_current_user():
-            sign_in_url = None
+class IndexHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            nickname = user.nickname()
+            auth_url = users.create_logout_url(dest_url='/')
         else:
-            sign_in_url = users.create_login_url(
-                dest_url=flask.url_for('view_post', post_id=post_id))
-        return flask.render_template(
-            'view_post.html', post=post, comments=comments,
-            sign_in_url=sign_in_url)
-    else:
-        return flask.render_template('404.html'), 404
+            nickname = None
+            auth_url = users.create_login_url(dest_url='/')
+        self.response.write(jinja_environment.get_template('index.html').render(
+            nickname=nickname,
+            is_admin=users.is_current_user_admin(),
+            auth_url=auth_url,
+            posts=models.Post.query().order(-models.Post.posted_at).fetch()))
 
 
-@app.route('/new-post')
-def new_post():
-    if not users.is_current_user_admin():
-        return flask.render_template('403.html'), 403
-    return flask.render_template('new_post.html')
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self):
+        post_id = self.request.get('id')
+        post_key = ndb.Key(urlsafe=post_id)
+        post = post_key.get()
+        if post:
+            comments = (models.Comment.query(models.Comment.post == post_key)
+                        .order(models.Comment.posted_at).fetch())
+            if users.get_current_user():
+                sign_in_url = None
+            else:
+                sign_in_url = users.create_login_url(
+                    dest_url=('/view-post?id=' + post_id))
+            self.response.write(
+                jinja_environment.get_template('view_post.html').render(
+                    post=post, comments=comments, sign_in_url=sign_in_url))
+        else:
+            webapp2.abort(404)
 
 
-@app.route('/submit-post', methods=['POST'])
-def submit_post():
-    if not users.is_current_user_admin():
-        return flask.render_template('403.html'), 403
-    post = models.Post(
-        title=flask.request.form['title'],
-        content=flask.request.form['content'])
-    post_key = post.put()
-    return flask.redirect(
-        flask.url_for('view_post', post_id=post_key.urlsafe()))
+class NewPostHandler(webapp2.RequestHandler):
+    def get(self):
+        if users.is_current_user_admin():
+            self.response.write(
+                jinja_environment.get_template('new_post.html').render())
+        else:
+            webapp2.abort(403)
 
 
-@app.route('/submit-comment', methods=['POST'])
-def submit_comment():
-    user = users.get_current_user()
-    if not user:
-        return flask.render_template('403.html'), 403
-    post_key = ndb.Key(urlsafe=flask.request.form['post_id'])
-    if not post_key.get():
-        return flask.render_template('400.html'), 400
-    author = models.Author(nickname=user.nickname(), email=user.email())
-    comment = models.Comment(
-        post=post_key, author=author, content=flask.request.form['content'])
-    comment.put()
-    best_match = flask.request.accept_mimetypes.best_match(
-        ['application/json', 'text/html'])
-    if (best_match == 'application/json' and
-        flask.request.accept_mimetypes[best_match] >
-        flask.request.accept_mimetypes['text/html']):
-        return flask.jsonify(nickname=author.nickname, email=author.email)
-    else:
-        return flask.redirect(
-            flask.url_for('view_post', post_id=post_key.urlsafe()))
+class SubmitPostHandler(webapp2.RequestHandler):
+    def post(self):
+        if users.is_current_user_admin():
+            title = self.request.get('title')
+            content = self.request.get('content')
+            if title and content:
+                post_key = models.Post(title=title, content=content).put()
+                return webapp2.redirect('/view-post?id=' + post_key.urlsafe())
+            else:
+                webapp2.abort(400)
+        else:
+            webapp2.abort(403)
 
 
-@app.errorhandler(400)
-def handle_400(error):
-    return flask.render_template('400.html'), 400
+class SubmitCommentHandler(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            post_key = ndb.Key(urlsafe=self.request.get('post_id'))
+            content = self.request.get('content')
+            if post_key.get() and content:
+                author = models.Author(
+                    nickname=user.nickname(), email=user.email())
+                comment = models.Comment(
+                    post=post_key, author=author, content=content)
+                comment.put()
+                if ('application/json' in
+                    self.request.headers.get('Accept', '').lower()):
+                    self.response.write(json.dumps(
+                        {'nickname': author.nickname, 'email': author.email}))
+                else:
+                    return webapp2.redirect(
+                        '/view-post?id=' + post_key.urlsafe())
+            else:
+                webapp2.abort(400)
+        else:
+            webapp2.abort(403)
 
 
-@app.errorhandler(404)
-def handle_404(error):
-    return flask.render_template('404.html'), 404
+def handle_400(request, response, exception):
+    response.set_status(400)
+    response.write(jinja_environment.get_template('400.html').render())
 
 
-@app.errorhandler(500)
-def handle_500(error):
-    logging.exception('An error occurred during a request.')
-    return flask.render_template('500.html'), 500
+def handle_403(request, response, exception):
+    response.set_status(403)
+    response.write(jinja_environment.get_template('403.html').render())
+
+
+def handle_404(request, response, exception):
+    response.set_status(404)
+    response.write(jinja_environment.get_template('404.html').render())
+
+
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.set_status(500)
+    response.write(jinja_environment.get_template('500.html').render())
+
+
+app = webapp2.WSGIApplication(
+    routes=[
+        ('/', IndexHandler),
+        ('/view-post', ViewPostHandler),
+        ('/new-post', NewPostHandler),
+        ('/submit-post', SubmitPostHandler),
+        ('/submit-comment', SubmitCommentHandler),
+    ],
+    debug=(not
+           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+app.error_handlers[400] = handle_400
+app.error_handlers[403] = handle_403
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500

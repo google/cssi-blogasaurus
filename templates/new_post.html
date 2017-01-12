@@ -3,7 +3,7 @@
 {% block title %}New Post – Blogasaurus{% endblock %}
 
 {% block content %}
-  <form action="{{ url_for('submit_post') }}" method="post">
+  <form action="/submit-post" method="post">
     <label>Title: <input type="text" name="title"></label>
     <label>
       Content:
