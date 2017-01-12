@@ -1,58 +1,88 @@
+import json
 import logging
+import os
+from os import path
 
-import flask
 from google.appengine.api import users
+import jinja2
+import webapp2
 
 import posts
 
 
-app = flask.Flask(__name__)
+template_dir = path.join(path.dirname(__file__), 'templates')
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 
-@app.route('/')
-def index():
-    user = users.get_current_user()
-    if user:
-        nickname = user.nickname()
-        auth_url = users.create_logout_url(dest_url=flask.url_for('index'))
-    else:
-        nickname = None
-        auth_url = users.create_login_url(dest_url=flask.url_for('index'))
-    return flask.render_template(
-        'index.html',
-        nickname=nickname,
-        is_admin=users.is_current_user_admin(),
-        auth_url=auth_url,
-        posts=posts.POSTS)
-
-
-@app.route('/post/<int:post_id>')
-def view_post(post_id):
-    if 0 <= post_id - 1 < len(posts.POSTS):
-        if users.get_current_user():
-            sign_in_url = None
+class IndexHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            nickname = user.nickname()
+            auth_url = users.create_logout_url(dest_url='/')
         else:
-            sign_in_url = users.create_login_url(
-                dest_url=flask.url_for('view_post', post_id=post_id))
-        return flask.render_template(
-            'view_post.html',
-            post=posts.POSTS[post_id - 1],
-            sign_in_url=sign_in_url)
-    else:
-        return flask.render_template('404.html'), 404
+            nickname = None
+            auth_url = users.create_login_url(dest_url='/')
+        self.response.write(jinja_environment.get_template('index.html').render(
+            nickname=nickname,
+            is_admin=users.is_current_user_admin(),
+            auth_url=auth_url,
+            posts=posts=posts.POSTS))
 
 
-@app.errorhandler(400)
-def handle_400(error):
-    return flask.render_template('400.html'), 400
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self):
+        try:
+            post_id = int(self.request.get('id'))
+        except ValueError:
+            webapp2.abort(400)
+        else:
+            if 0 <= post_id - 1 < len(posts.POSTS):
+                if users.get_current_user():
+                    sign_in_url = None
+                else:
+                    sign_in_url = users.create_login_url(
+                        dest_url=('/view-post?id=' + post_id))
+                self.response.write(
+                    jinja_environment.get_template('view_post.html').render(
+                        post=posts.POSTS[post_id - 1], sign_in_url=sign_in_url))
+            else:
+                webapp2.abort(404)
 
 
-@app.errorhandler(404)
-def handle_404(error):
-    return flask.render_template('404.html'), 404
+def handle_400(request, response, exception):
+    response.set_status(400)
+    response.write(jinja_environment.get_template('400.html').render())
 
 
-@app.errorhandler(500)
-def handle_500(error):
-    logging.exception('An error occurred during a request.')
-    return flask.render_template('500.html'), 500
+def handle_403(request, response, exception):
+    response.set_status(403)
+    response.write(jinja_environment.get_template('403.html').render())
+
+
+def handle_404(request, response, exception):
+    response.set_status(404)
+    response.write(jinja_environment.get_template('404.html').render())
+
+
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.set_status(500)
+    response.write(jinja_environment.get_template('500.html').render())
+
+
+app = webapp2.WSGIApplication(
+    routes=[
+        ('/', IndexHandler),
+        ('/view-post', ViewPostHandler),
+        ('/new-post', NewPostHandler),
+        ('/submit-post', SubmitPostHandler),
+        ('/submit-comment', SubmitCommentHandler),
+    ],
+    debug=(not
+           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+app.error_handlers[400] = handle_400
+app.error_handlers[403] = handle_403
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500
