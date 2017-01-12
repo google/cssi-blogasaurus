@@ -1,38 +1,68 @@
 import logging
+import os
+from os import path
 
-import flask
+import jinja2
+import webapp2
 
 import posts
 
 
-app = flask.Flask(__name__)
+template_dir = path.join(path.dirname(__file__), 'templates')
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 
-@app.route('/')
-def index():
-    return flask.render_template('index.html', posts=posts.POSTS)
+class IndexHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write(jinja_environment.get_template('index.html').render(
+            posts=posts.POSTS))
 
 
-@app.route('/post/<int:post_id>')
-def view_post(post_id):
-    if 0 <= post_id - 1 < len(posts.POSTS):
-        return flask.render_template(
-            'view_post.html', post=posts.POSTS[post_id - 1])
-    else:
-        return flask.render_template('404.html'), 404
+class ViewPostHandler(webapp2.RequestHandler):
+    def get(self):
+        try:
+            post_id = int(self.request.get('id'))
+        except ValueError:
+            webapp2.abort(400)
+        else:
+            if 0 <= post_id - 1 < len(posts.POSTS):
+                self.response.write(
+                    jinja_environment.get_template('view_post.html').render(
+                        post=posts.POSTS[post_id - 1]))
+            else:
+                webapp2.abort(404)
 
 
-@app.errorhandler(400)
-def handle_400(error):
-    return flask.render_template('400.html'), 400
+def handle_400(request, response, exception):
+    response.set_status(400)
+    response.write(jinja_environment.get_template('400.html').render())
 
 
-@app.errorhandler(404)
-def handle_404(error):
-    return flask.render_template('404.html'), 404
+def handle_403(request, response, exception):
+    response.set_status(403)
+    response.write(jinja_environment.get_template('403.html').render())
 
 
-@app.errorhandler(500)
-def handle_500(error):
-    logging.exception('An error occurred during a request.')
-    return flask.render_template('500.html'), 500
+def handle_404(request, response, exception):
+    response.set_status(404)
+    response.write(jinja_environment.get_template('404.html').render())
+
+
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.set_status(500)
+    response.write(jinja_environment.get_template('500.html').render())
+
+
+app = webapp2.WSGIApplication(
+    routes=[
+        ('/', IndexHandler),
+        ('/view-post', ViewPostHandler),
+    ],
+    debug=(not
+           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+app.error_handlers[400] = handle_400
+app.error_handlers[403] = handle_403
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500

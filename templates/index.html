@@ -2,7 +2,7 @@
 
 {% block content %}
   {% for post in posts %}
-    <h2><a href="{{ url_for('view_post', post_id=loop.index) }}">{{ post.title }}</a></h2>
+    <h2><a href="/view-post?id={{ loop.index }}">{{ post.title }}</a></h2>
     <p>{{ post.content }}</p>
   {% endfor %}
 {% endblock %}
