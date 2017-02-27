@@ -116,7 +116,8 @@ class SubmitCommentHandler(webapp2.RequestHandler):
 
 class ClearCommentsHandler(webapp2.RequestHandler):
     def get(self):
-        if users.is_current_user_admin():
+        if (users.is_current_user_admin() or
+            self.request.headers.get('X-Appengine-Cron') == 'true'):
             for comment_key in models.Comment.query().iter(keys_only=True):
                 comment_key.delete()
             self.response.set_status(204)
