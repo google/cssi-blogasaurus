@@ -1,14 +1,18 @@
-# Instructions
+# Blogasaurus
 
-1.  Create a single HTML page about yourself.  Use structured markup so that
-    the elements on your page have the proper meaning.  Upload your one-page
-    website to GitHub Pages so that it can be seen on a github.io subdomain.
-2.  Create multiple HTML pages that are blog posts about whatever you want.
-    Connect them together with hyperlinks, and create another HTML page to serve
-    as a homepage/table of contents.  Create a CSS stylesheet to customize the
-    appearance of your website and use it on each page.
-3.  Use JavaScript and jQuery to add a comment system to your website, so that
-    a user can write comments on posts and they appear at the bottom of the page
-    when the user submits them.  (For now, it's okay for the comments to
-    disappear when the user navigates away from the page and not be visible to
-    anyone else.)
+This is a simple web application that hosts a blog with comments. It is part of
+the educational curriculum used at Google's [Computer Science Summer
+Institute](https://edu.google.com/resources/programs/computer-science-summer-institute/).
+
+Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
+each stage is available as a separate branch in this Git repository.
+
+You are currently viewing stage 3, which focuses on dynamic client-side
+behavior. A [live
+demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
+available.
+
+This stage of the app can be viewed locally using `file://` URLs in a web
+browser or hosted on GitHub Pages.
+
+This is not an official Google product.
