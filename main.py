@@ -114,6 +114,16 @@ class SubmitCommentHandler(webapp2.RequestHandler):
             webapp2.abort(403)
 
 
+class ClearCommentsHandler(webapp2.RequestHandler):
+    def get(self):
+        if users.is_current_user_admin():
+            for comment_key in models.Comment.query().iter(keys_only=True):
+                comment_key.delete()
+            self.response.set_status(204)
+        else:
+            webapp2.abort(403)
+
+
 def handle_400(request, response, exception):
     response.set_status(400)
     response.write(jinja_environment.get_template('400.html').render())
@@ -135,6 +145,7 @@ def handle_500(request, response, exception):
     response.write(jinja_environment.get_template('500.html').render())
 
 
+production = os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')
 app = webapp2.WSGIApplication(
     routes=[
         ('/', IndexHandler),
@@ -142,10 +153,11 @@ app = webapp2.WSGIApplication(
         ('/new-post', NewPostHandler),
         ('/submit-post', SubmitPostHandler),
         ('/submit-comment', SubmitCommentHandler),
+        ('/clear-comments', ClearCommentsHandler),
     ],
-    debug=(not
-           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+    debug=(not production))
 app.error_handlers[400] = handle_400
 app.error_handlers[403] = handle_403
 app.error_handlers[404] = handle_404
-app.error_handlers[500] = handle_500
+if production:
+    app.error_handlers[500] = handle_500
