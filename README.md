@@ -8,7 +8,8 @@ Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
 You are currently viewing stage 6, which focuses on user authentication with
-Google Accounts.
+Google Accounts. A [live demo](https://cssi-blogasaurus-stage-6.appspot.com/) is
+available. Note that you cannot sign in as admin in the demo.
 
 This app runs on the [Google App Engine Python Standard
 Environment](https://cloud.google.com/appengine/docs/standard/python/). To run

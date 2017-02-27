@@ -86,14 +86,15 @@ def handle_500(request, response, exception):
     response.write(jinja_environment.get_template('500.html').render())
 
 
+production = os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')
 app = webapp2.WSGIApplication(
     routes=[
         ('/', IndexHandler),
         ('/view-post', ViewPostHandler),
     ],
-    debug=(not
-           os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/')))
+    debug=(not production))
 app.error_handlers[400] = handle_400
 app.error_handlers[403] = handle_403
 app.error_handlers[404] = handle_404
-app.error_handlers[500] = handle_500
+if production:
+    app.error_handlers[500] = handle_500
