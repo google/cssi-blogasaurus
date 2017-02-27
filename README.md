@@ -8,7 +8,9 @@ Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
 You are currently viewing stage 7, which focuses on persistent data storage. A
-[working demo](https://cssi-blogasaurus-stage-7.appspot.com/) is available.
+[live demo](https://cssi-blogasaurus-stage-7.appspot.com/) is available. Note
+that you cannot sign in as admin in the demo and all comments are deleted every
+15 minutes.
 
 This app runs on the [Google App Engine Python Standard
 Environment](https://cloud.google.com/appengine/docs/standard/python/). To run
