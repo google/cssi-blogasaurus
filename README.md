@@ -1,19 +1,19 @@
-# Instructions
+# Blogasaurus
 
-1.  Create a single HTML page about yourself.  Use structured markup so that
-    the elements on your page have the proper meaning.  Upload your one-page
-    website to GitHub Pages so that it can be seen on a github.io subdomain.
-2.  Create multiple HTML pages that are blog posts about whatever you want.
-    Connect them together with hyperlinks, and create another HTML page to serve
-    as a homepage/table of contents.  Create a CSS stylesheet to customize the
-    appearance of your website and use it on each page.
-3.  Use JavaScript and jQuery to add a comment system to your website, so that
-    a user can write comments on posts and they appear at the bottom of the page
-    when the user submits them.  (For now, it's okay for the comments to
-    disappear when the user navigates away from the page and not be visible to
-    anyone else.)
-4.  Migrate your website from GitHub Pages to Google App Engine (Python Standard
-    Environment).  Represent your HTML pages as strings in Python instead of
-    static files, and serve them from a webapp2 application.  Serve your other
-    resources (like stylesheets and scripts) as static files in App Engine.
-    Deploy your website to an appspot.com subdomain.
+This is a simple web application that hosts a blog with comments. It is part of
+the educational curriculum used at Google's [Computer Science Summer
+Institute](https://edu.google.com/resources/programs/computer-science-summer-institute/).
+
+Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
+each stage is available as a separate branch in this Git repository.
+
+You are currently viewing stage 4, which focuses on server-side behavior. A
+[live demo](https://cssi-blogasaurus-stage-4.appspot.com/) is available.
+
+This app runs on the [Google App Engine Python Standard
+Environment](https://cloud.google.com/appengine/docs/standard/python/). To run
+it locally, [install the Google Cloud
+SDK](https://cloud.google.com/appengine/docs/standard/python/download), then run
+`dev_appserver.py app.yaml`.
+
+This is not an official Google product.
