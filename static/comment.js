@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-$(document).ready(() => {
+$(document).ready(function() {
   const commentForm = $('#comment-form');
   const commentInputs = $('#comment-form :input');
   const commentContent = $('#comment-content');
-  commentForm.submit((event) => {
+  commentForm.submit(function(event) {
     event.preventDefault();
     const formData = commentForm.serialize();
     commentInputs.prop('disabled', true);
