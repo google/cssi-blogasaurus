@@ -34,13 +34,13 @@ class IndexHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            nickname = user.nickname()
+            email = user.email()
             auth_url = users.create_logout_url(dest_url='/')
         else:
-            nickname = None
+            email = None
             auth_url = users.create_login_url(dest_url='/')
         self.response.write(jinja_environment.get_template('index.html').render(
-            nickname=nickname,
+            email=email,
             is_admin=users.is_current_user_admin(),
             auth_url=auth_url,
             posts=models.Post.query().order(-models.Post.posted_at).fetch()))
@@ -96,15 +96,12 @@ class SubmitCommentHandler(webapp2.RequestHandler):
             post_key = ndb.Key(urlsafe=self.request.get('post_id'))
             content = self.request.get('content')
             if post_key.get() and content:
-                author = models.Author(
-                    nickname=user.nickname(), email=user.email())
                 comment = models.Comment(
-                    post=post_key, author=author, content=content)
+                    post=post_key, author_email=user.email(), content=content)
                 comment.put()
                 if ('application/json' in
                     self.request.headers.get('Accept', '').lower()):
-                    self.response.write(json.dumps(
-                        {'nickname': author.nickname, 'email': author.email}))
+                    self.response.write(json.dumps({'email': author.email}))
                 else:
                     return webapp2.redirect(
                         '/view-post?id=' + post_key.urlsafe())

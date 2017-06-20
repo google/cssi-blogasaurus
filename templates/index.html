@@ -17,9 +17,9 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  {% if nickname %}
+  {% if email %}
     <p>
-      Hello, {{ nickname }}
+      Hello, {{ email }}
       {% if is_admin %}
         • <a href="/new-post">New Post</a>
       {% endif %}

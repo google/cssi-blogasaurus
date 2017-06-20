@@ -26,7 +26,7 @@
     <div id="comments">
       {% for comment in comments %}
         <div>
-          <h4><a href="mailto:{{ comment.author.email }}">{{ comment.author.nickname }}</a> wrote:</h4>
+          <h4><a href="mailto:{{ comment.author_email }}">{{ comment.author_email }}</a> wrote:</h4>
           <p>{{ comment.content }}</p>
         </div>
       {% endfor %}

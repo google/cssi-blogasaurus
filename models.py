@@ -23,13 +23,8 @@ class Post(ndb.Model):
     posted_at = ndb.DateTimeProperty(auto_now_add=True)
 
 
-class Author(ndb.Model):
-    nickname = ndb.StringProperty()
-    email = ndb.StringProperty()
-
-
 class Comment(ndb.Model):
     post = ndb.KeyProperty(kind=Post)
-    author = ndb.StructuredProperty(Author)
+    author_email = ndb.StringProperty()
     content = ndb.TextProperty()
     posted_at = ndb.DateTimeProperty(auto_now_add=True)

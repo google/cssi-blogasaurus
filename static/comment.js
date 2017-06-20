@@ -13,28 +13,28 @@
 // limitations under the License.
 
 $(document).ready(function() {
-  const commentForm = $('#comment-form');
-  const commentInputs = $('#comment-form :input');
-  const commentContent = $('#comment-content');
+  var commentForm = $('#comment-form');
+  var commentInputs = $('#comment-form :input');
+  var commentContent = $('#comment-content');
   commentForm.submit(function(event) {
     event.preventDefault();
-    const formData = commentForm.serialize();
+    var formData = commentForm.serialize();
     commentInputs.prop('disabled', true);
     $.post({url: '/submit-comment', data: formData, dataType: 'json'}).then(
-        (responseData) => {
+        function(responseData) {
           $('#comments')
               .append($('<div/>')
                   .append($('<h4/>')
                       .append($('<a/>', {
                         href: 'mailto:' + responseData.email,
-                        text: responseData.nickname,
+                        text: responseData.email,
                       })).append(document.createTextNode(' wrote:')))
                   .append($('<p/>', {text: commentContent.val()})));
           commentContent.val('');
           commentInputs.prop('disabled', false);
           commentContent.focus();
         },
-        () => {
+        function() {
           commentForm.append($('<p>Something went wrong.</p>'));
         });
   });
