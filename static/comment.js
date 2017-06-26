@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-$(document).ready(() => {
-  const commentContent = $('#comment-content');
-  $('#comment-form').submit((event) => {
+$(document).ready(function() {
+  var commentContent = $('#comment-content');
+  $('#comment-form').submit(function(event) {
     event.preventDefault();
     $('#no-comments').remove();
     $('#comments')
