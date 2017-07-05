@@ -1,4 +1,4 @@
-{#
+<!--
   Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,19 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-#}
-
-{% extends 'layout.html' %}
-
-{% block title %}Bad Request – Blogasaurus{% endblock %}
-
-{% block content %}
-  <h2>Bad Request</h2>
-  <p>Something was wrong with your request, so it couldn’t be handled properly. That’s all we know.</p>
-{% endblock %}
+-->
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Bad Request – Blogasaurus</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div id="content">
+      <h1><a href="/">Blogasaurus</a></h1>
+      <h2>Bad Request</h2>
+      <p>Something was wrong with your request, so it couldn’t be handled properly. That’s all we know.</p>
+    </div>
+  </body>
+</html>

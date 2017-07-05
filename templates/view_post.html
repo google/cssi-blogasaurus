@@ -1,4 +1,4 @@
-{#
+<!--
   Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,42 +12,45 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-#}
-
-{% extends 'layout.html' %}
-
-{% block title %}{{ post.title }} – Blogasaurus{% endblock %}
-
-{% block content %}
-  <h2>{{ post.title }}</h2>
-  <p>{{ post.content }}</p>
-  <h3>Comments</h3>
-  {% if comments %}
-    <div id="comments">
-      {% for comment in comments %}
-        <div>
-          <h4><a href="mailto:{{ comment.author_email }}">{{ comment.author_email }}</a> wrote:</h4>
-          <p>{{ comment.content }}</p>
+-->
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ post.title }} – Blogasaurus</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div id="content">
+      <h1><a href="/">Blogasaurus</a></h1>
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.content }}</p>
+      <h3>Comments</h3>
+      {% if comments %}
+        <div id="comments">
+          {% for comment in comments %}
+            <div>
+              <h4><a href="mailto:{{ comment.author_email }}">{{ comment.author_email }}</a> wrote:</h4>
+              <p>{{ comment.content }}</p>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      {% else %}
+        <p>There are no comments on this post yet.</p>
+      {% endif %}
+      <h3>Leave a Comment</h3>
+      {% if sign_in_url %}
+        <p>You must sign in to leave a comment.</p>
+        <p><a href="{{ sign_in_url }}">Sign In with a Google Account</a></p>
+      {% else %}
+        <form id="comment-form" action="/submit-comment" method="post">
+          <input type="hidden" name="post_id" value="{{ post.key.urlsafe() }}">
+          <textarea id="comment-content" name="content"></textarea>
+          <input type="submit" value="Post Comment">
+        </form>
+      {% endif %}
     </div>
-  {% else %}
-    <p>There are no comments on this post yet.</p>
-  {% endif %}
-  <h3>Leave a Comment</h3>
-  {% if sign_in_url %}
-    <p>You must sign in to leave a comment.</p>
-    <p><a href="{{ sign_in_url }}">Sign In with a Google Account</a></p>
-  {% else %}
-    <form id="comment-form" action="/submit-comment" method="post">
-      <input type="hidden" name="post_id" value="{{ post.key.urlsafe() }}">
-      <textarea id="comment-content" name="content"></textarea>
-      <input type="submit" value="Post Comment">
-    </form>
-  {% endif %}
-{% endblock %}
-
-{% block scripts %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="/static/comment.js"></script>
-{% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/static/comment.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-{#
+<!--
   Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,25 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-#}
-
-{% extends 'layout.html' %}
-
-{% block title %}New Post – Blogasaurus{% endblock %}
-
-{% block content %}
-  <form action="/submit-post" method="post">
-    <label>Title: <input type="text" name="title"></label>
-    <label>
-      Content:
-      <textarea name="content"></textarea>
-    </label>
-    <input type="submit" value="Post">
-  </form>
-{% endblock %}
+-->
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>New Post – Blogasaurus</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div id="content">
+      <h1><a href="/">Blogasaurus</a></h1>
+      <form action="/submit-post" method="post">
+        <label>Title: <input type="text" name="title"></label>
+        <label>
+          Content:
+          <textarea name="content"></textarea>
+        </label>
+        <input type="submit" value="Post">
+      </form>
+    </div>
+  </body>
+</html>
