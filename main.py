@@ -41,11 +41,6 @@ def handle_400(request, response, exception):
     response.write(posts.ERROR_400)
 
 
-def handle_403(request, response, exception):
-    response.set_status(403)
-    response.write(posts.ERROR_403)
-
-
 def handle_404(request, response, exception):
     response.set_status(404)
     response.write(posts.ERROR_404)
@@ -66,7 +61,6 @@ app = webapp2.WSGIApplication(
     ],
     debug=(not production))
 app.error_handlers[400] = handle_400
-app.error_handlers[403] = handle_403
 app.error_handlers[404] = handle_404
 if production:
     app.error_handlers[500] = handle_500
