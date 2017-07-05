@@ -101,7 +101,7 @@ class SubmitCommentHandler(webapp2.RequestHandler):
                 comment.put()
                 if ('application/json' in
                     self.request.headers.get('Accept', '').lower()):
-                    self.response.write(json.dumps({'email': author.email}))
+                    self.response.write(json.dumps({'email': user.email()}))
                 else:
                     return webapp2.redirect(
                         '/view-post?id=' + post_key.urlsafe())
