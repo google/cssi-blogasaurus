@@ -22,12 +22,13 @@ $(document).ready(function() {
     commentInputs.prop('disabled', true);
     $.post({url: '/submit-comment', data: formData, dataType: 'json'}).then(
         function(responseData) {
+          $('#no-comments').remove();
           $('#comments')
               .append($('<div/>')
                   .append($('<h4/>')
                       .append($('<a/>', {
                         href: 'mailto:' + responseData.email,
-                        text: responseData.email,
+                        text: responseData.email
                       })).append(document.createTextNode(' wrote:')))
                   .append($('<p/>', {text: commentContent.val()})));
           commentContent.val('');

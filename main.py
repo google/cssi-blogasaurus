@@ -18,7 +18,6 @@ import os
 from os import path
 
 from google.appengine.api import users
-from google.appengine.ext import ndb
 import jinja2
 import webapp2
 
@@ -43,17 +42,15 @@ class IndexHandler(webapp2.RequestHandler):
             email=email,
             is_admin=users.is_current_user_admin(),
             auth_url=auth_url,
-            posts=models.Post.query().order(-models.Post.posted_at).fetch()))
+            posts=models.get_all_posts()))
 
 
 class ViewPostHandler(webapp2.RequestHandler):
     def get(self):
         post_id = self.request.get('id')
-        post_key = ndb.Key(urlsafe=post_id)
-        post = post_key.get()
+        post = models.get_post_by_id(post_id)
         if post:
-            comments = (models.Comment.query(models.Comment.post == post_key)
-                        .order(models.Comment.posted_at).fetch())
+            comments = models.get_comments_by_post_id(post_id)
             if users.get_current_user():
                 sign_in_url = None
             else:
@@ -81,8 +78,8 @@ class SubmitPostHandler(webapp2.RequestHandler):
             title = self.request.get('title')
             content = self.request.get('content')
             if title and content:
-                post_key = models.Post(title=title, content=content).put()
-                return webapp2.redirect('/view-post?id=' + post_key.urlsafe())
+                post_id = models.create_post(title, content)
+                return webapp2.redirect('/view-post?id=' + post_id)
             else:
                 webapp2.abort(400)
         else:
@@ -93,18 +90,15 @@ class SubmitCommentHandler(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user:
-            post_key = ndb.Key(urlsafe=self.request.get('post_id'))
+            post_id = self.request.get('post_id')
             content = self.request.get('content')
-            if post_key.get() and content:
-                comment = models.Comment(
-                    post=post_key, author_email=user.email(), content=content)
-                comment.put()
+            if content and models.get_post_by_id(post_id):
+                models.create_comment(post_id, user.email(), content)
                 if ('application/json' in
                     self.request.headers.get('Accept', '').lower()):
                     self.response.write(json.dumps({'email': user.email()}))
                 else:
-                    return webapp2.redirect(
-                        '/view-post?id=' + post_key.urlsafe())
+                    return webapp2.redirect('/view-post?id=' + post_id)
             else:
                 webapp2.abort(400)
         else:
@@ -115,8 +109,7 @@ class ClearCommentsHandler(webapp2.RequestHandler):
     def get(self):
         if (users.is_current_user_admin() or
             self.request.headers.get('X-Appengine-Cron') == 'true'):
-            for comment_key in models.Comment.query().iter(keys_only=True):
-                comment_key.delete()
+            models.delete_all_comments()
             self.response.set_status(204)
         else:
             webapp2.abort(403)
