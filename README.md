@@ -7,7 +7,7 @@ Institute](https://edu.google.com/resources/programs/computer-science-summer-ins
 Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
-You are currently viewing stage 3, which focuses on dynamic client-side
+You are currently viewing stage 2, which focuses on dynamic client-side
 behavior. A [live
 demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
 available.
