@@ -9,7 +9,7 @@ each stage is available as a separate branch in this Git repository.
 
 You are currently viewing stage 3, which focuses on serving static HTML pages
 from an AppEngine app. A [live
-demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
+demo](https://step3-dot-blogasaurus.appspot.com/) is
 available.
 
 This is not an official Google product.
