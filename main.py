@@ -50,7 +50,7 @@ class BlogHandler(webapp2.RequestHandler):
         # otherwise. Add the new blog post to their list of posts.
         # Note: if you didn't create an Author Model, your `post` method will
         # look very different. See below for an alternative.
-        check_authors = Author.query(Author.username == name_input).fetch()
+        check_authors = Author.query(Author.username == nickname).fetch()
         if len(check_authors) > 0:
             author = check_authors[0]
             author.posts.append(blog_post.key)
