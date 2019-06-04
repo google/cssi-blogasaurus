@@ -9,7 +9,6 @@ each stage is available as a separate branch in this Git repository.
 
 You are currently viewing stage 4, which focuses on using templates with Jinja
 and AppEngine. A [live
-demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
-available.
+demo](https://step4-dot-blogasaurus.appspot.com/) is available.
 
 This is not an official Google product.
