@@ -7,13 +7,9 @@ Institute](https://edu.google.com/resources/programs/computer-science-summer-ins
 Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
-You are currently viewing stage 4, which focuses on server-side behavior. A
-[live demo](https://cssi-blogasaurus-stage-4.appspot.com/) is available.
-
-This app runs on the [Google App Engine Python Standard
-Environment](https://cloud.google.com/appengine/docs/standard/python/). To run
-it locally, [install the Google Cloud
-SDK](https://cloud.google.com/appengine/docs/standard/python/download), then run
-`dev_appserver.py app.yaml`.
+You are currently viewing stage 3, which focuses on serving static HTML pages
+from an AppEngine app. A [live
+demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
+available.
 
 This is not an official Google product.
