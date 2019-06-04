@@ -1,19 +1,25 @@
-// Run javascript after the DOM loads.
-window.onload = function() {
+const onLoad = () => {
   console.log("I'm working!!");
 
-  let h1 = document.querySelector('h1');
+  const h1 = document.querySelector('h1');
   h1.style.cursor = 'pointer';
-  h1.onclick = function(event) {
-    console.log(event);
-    h1.style.color = 'blue';
-  }
+  h1.addEventListener(
+      'click',
+      (event) => {
+          console.log(event);
+          h1.style.color = 'blue';
+      });
 
-  let img = document.querySelector('img');
+  const img = document.querySelector('img');
   img.style.cursor = 'pointer';
-  img.onclick = function(event) {
-    console.log(event);
-    img.style.height = '300px';
-    img.style.width = '300px';
-  }
+  img.addEventListener(
+      "click",
+      (event) => {
+          console.log(event);
+          img.style.height = '300px';
+          img.style.width = '300px';
+      });
 }
+
+// Run javascript after the DOM loads.
+window.addEventListener("load", onLoad);
