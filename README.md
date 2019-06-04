@@ -8,7 +8,7 @@ Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
 You are currently viewing stage 5, which focuses on using Datastore. A [live
-demo](https://google.github.io/cssi-blogasaurus/stage-3/index.html) is
+demo](https://step5-dot-blogasaurus.appspot.com/) is
 available.
 
 This is not an official Google product.
