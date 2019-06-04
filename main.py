@@ -1,6 +1,7 @@
 import webapp2
 import jinja2
 import os
+from google.appengine.api import users
 from models import Post
 from models import Author
 
@@ -11,8 +12,20 @@ the_jinja_env = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        if user:
+            email = user.email()
+            login_url = users.create_logout_url('/')
+        else:
+            email = None
+            login_url = users.create_login_url('/')
+
         template = the_jinja_env.get_template('templates/index.html')
-        self.response.write(template.render())
+        self.response.write(template.render(
+            user=user,
+            email=email,
+            is_admin=users.is_current_user_admin(),
+            login_url=login_url))
 
 class AboutMyFamilyHandler(webapp2.RequestHandler):
     def get(self):
@@ -24,20 +37,22 @@ class BlogHandler(webapp2.RequestHandler):
         template = the_jinja_env.get_template('templates/new_post.html')
         self.response.write(template.render())
     def post(self):
+        user = users.get_current_user()
+        nickname = user.nickname()
+
         title_input = self.request.get('title')
         content_input = self.request.get('content')
-        name_input = self.request.get('name')
 
         blog_post = Post(title=title_input, content=content_input)
         blog_post.put()
 
-        check_authors = Author.query(Author.username == name_input).fetch()
+        check_authors = Author.query(Author.username == nickname).fetch()
         # check_authors = [Author(username, posts), Author(), Author()]
         if len(check_authors) > 0:
             author = check_authors[0]
             author.posts.append(blog_post.key)
         else:
-            author = Author(username=name_input, posts=[blog_post.key])
+            author = Author(username=nickname, posts=[blog_post.key])
 
         author.put()
 
@@ -46,7 +61,7 @@ class BlogHandler(webapp2.RequestHandler):
             blog_posts.append(blog_post_key.get())
 
         template_vars = {
-            'username': name_input,
+            'nickname': nickname,
             'blog_posts': blog_posts
         }
         template = the_jinja_env.get_template(
