@@ -7,8 +7,8 @@ Institute](https://edu.google.com/resources/programs/computer-science-summer-ins
 Students work on this app in [multiple stages](INSTRUCTIONS.md). The code for
 each stage is available as a separate branch in this Git repository.
 
-You are currently viewing stage 2, which focuses on CSS and hyperlinks. A [live
-demo](https://google.github.io/cssi-blogasaurus/stage-2/index.html) is
+You are currently viewing stage 1, which focuses on HTML. A [live
+demo](https://google.github.io/cssi-blogasaurus/stage-1/index.html) is
 available.
 
 This stage of the app can be viewed locally using `file://` URLs in a web
