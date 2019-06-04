@@ -18,3 +18,7 @@ img {
   height: 200px;
   width: 200px;
 }
+
+section {
+  padding: 16px;
+}
