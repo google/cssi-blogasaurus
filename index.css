@@ -1,0 +1,20 @@
+html {
+  background-color: lavender;
+  color: darkslategray;
+  font-family: Helvetica;
+  max-width: 800px;
+}
+
+body, img {
+  border: 1px solid purple;
+  border-radius: 10px;
+}
+
+body {
+  padding: 16px;
+}
+
+img {
+  height: 200px;
+  width: 200px;
+}
